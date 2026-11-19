@@ -1,0 +1,12 @@
+{% extends "cabinet/base.html" %}
+{% block cab %}
+<h2 class="ph">Мектеп есебі</h2>
+<p class="sub" style="margin-bottom:14px">{{ school }}. Тек расталған жазбалар ұпайы есептелген.</p>
+<p><a class="btn btn-gold" href="{% url 'report_csv' %}">Excel-ге жүктеу (CSV)</a></p>
+<div class="tblwrap"><table class="tbl">
+<thead><tr><th>№</th><th>Мұғалім</th><th>Пәні</th><th class="num">Жалпы</th>{% for i, c in cats %}<th class="num" title="{{ c.name }}">{{ i }}</th>{% endfor %}</tr></thead>
+<tbody>{% for r in rows %}<tr><td>{{ r.pos }}</td><td>{{ r.t.full_name }}</td><td>{{ r.t.subject }}</td><td class="num"><b>{{ r.t.score }}</b></td>{% for p in r.cells %}<td class="num">{{ p }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+</table></div>
+<p class="fs" style="margin-top:20px">Бағандар</p>
+<ol class="legend">{% for i, c in cats %}<li>{{ c.name }}</li>{% endfor %}</ol>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "panel/base.html" %}
+{% block cab %}
+<h2 class="ph">Шолу</h2>
+<div class="stat" style="flex-wrap:wrap">
+  <div><strong>{{ teachers }}</strong><span>тіркелген мұғалім</span></div>
+  <div><strong>{{ schools }}</strong><span>мектеп</span></div>
+  <div><strong>{{ pending }}</strong><span>бағалауды күтеді</span></div>
+  <div><strong>{{ approved }}</strong><span>расталған</span></div>
+  <div><strong>{{ rejected }}</strong><span>қабылданбаған</span></div>
+  <div><strong>{{ zavuch }}</strong><span>мектеп әкімшісі</span></div>
+</div>
+{% if role_pending %}<p><a class="btn btn-gold" href="{% url 'panel_roles' %}">Әкімші/директор рөлін растауды күтіп тұрған {{ role_pending }} сұраныс</a></p>{% endif %}
+{% if pending %}<p><a class="btn btn-gold" href="{% url 'panel_submissions' %}">Күтіп тұрған {{ pending }} жазбаны бағалау</a></p>{% endif %}
+<p class="fs" style="margin-top:20px">Соңғы тіркелгендер</p>
+<div class="tblwrap"><table class="tbl">
+<thead><tr><th>Мұғалім</th><th>Мектеп</th><th>Пәні</th><th>Тіркелген күні</th></tr></thead>
+<tbody>{% for t in latest %}<tr><td>{{ t.full_name }}</td><td>{{ t.school.name }}</td><td>{{ t.subject }}</td><td>{{ t.user.date_joined|date:"d.m.Y H:i" }}</td></tr>
+{% empty %}<tr><td colspan="4">Әзірге ешкім тіркелген жоқ.</td></tr>{% endfor %}</tbody>
+</table></div>
+<p class="fs" style="margin-top:22px">Әкімші тіркелгілері</p>
+<div class="tblwrap"><table class="tbl">
+<thead><tr><th>Логин</th><th>Email</th><th>Соңғы кіру</th><th>Құпиясөз</th></tr></thead>
+<tbody>{% for a in admins %}<tr><td><b>{{ a.username }}</b></td><td>{{ a.email|default:"—" }}</td><td>{% if a.last_login %}{{ a.last_login|date:"d.m.Y H:i" }}{% else %}—{% endif %}</td>
+<td>{% if a == user %}<a href="{% url 'password_change' %}">Өз құпиясөзімді өзгерту</a>{% elif user.is_superuser %}<form method="post" action="{% url 'panel_user_password' a.pk %}" onsubmit="return confirm('Жаңа уақытша құпиясөз жасалсын ба?')">{% csrf_token %}<input type="hidden" name="next" value="{% url 'panel' %}"><button class="btn btn-line btn-sm" type="submit">Жаңа құпиясөз</button></form>{% endif %}</td></tr>{% endfor %}</tbody>
+</table></div>
+<p class="sub" style="margin:10px 0 0">Құпиясөздер хэштеліп сақталады, сондықтан оларды көруге болмайды (бұл қауіпсіздік талабы). Ұмытылса, жаңасы тағайындалады немесе email арқылы қалпына келтіріледі.</p>
+{% endblock %}

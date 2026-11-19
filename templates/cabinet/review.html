@@ -1,0 +1,22 @@
+{% extends "cabinet/base.html" %}
+{% block cab %}
+<h2 class="ph">Жазбаларды тексеру</h2>
+{% for s in items %}
+<div class="rec" style="flex-wrap:wrap">
+  <div style="flex:1;min-width:240px">
+    <b>{{ s.title }}</b>
+    <small>{{ s.teacher.full_name }}, {{ s.teacher.subject }}</small>
+    <small style="display:block">{{ s.criterion.category.name }}, {{ s.criterion.title }} ({{ s.criterion.points }} ұпай), {{ s.event_date|date:"d.m.Y" }}</small>
+    {% if s.description %}<div style="font-size:14px">{{ s.description }}</div>{% endif %}
+    <small style="display:block"><a href="{% url 'document' s.pk %}" target="_blank" rel="noopener">Құжатты ашу</a></small>
+  </div>
+  <form method="post" class="rvform">{% csrf_token %}
+    <input name="comment" maxlength="300" placeholder="Түсініктеме (қаламасаңыз бос қалдырыңыз)" aria-label="Түсініктеме">
+    <button class="btn btn-gold" type="submit" formaction="{% url 'review_action' s.pk 'approve' %}">Растау</button>
+    <button class="btn btn-line" type="submit" formaction="{% url 'review_action' s.pk 'reject' %}">Қабылдамау</button>
+  </form>
+</div>
+{% empty %}
+<p class="sub">Тексеруді күтіп тұрған жазба жоқ.</p>
+{% endfor %}
+{% endblock %}

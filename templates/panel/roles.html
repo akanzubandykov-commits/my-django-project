@@ -1,0 +1,33 @@
+{% extends "panel/base.html" %}
+{% block cab %}
+<h2 class="ph">Рөл сұраныстары</h2>
+<p class="sub" style="margin-bottom:12px">Құжатты ашып, тағайындау бұйрығын (аты-жөні, мектебі, лауазымы) тексеріңіз. Растасаңыз, мұғалімге сұралған рөл беріледі де, оған email жіберіледі. Расталған рөлдерді «Мұғалімдер» бөлімінде кейін алып тастауға болады.</p>
+<form class="filt" method="get">
+  <select name="status" aria-label="Мәртебе">
+    <option value="pending"{% if status == 'pending' %} selected{% endif %}>Күтуде</option>
+    <option value="approved"{% if status == 'approved' %} selected{% endif %}>Расталған</option>
+    <option value="rejected"{% if status == 'rejected' %} selected{% endif %}>Қабылданбаған</option>
+    <option value="all"{% if status == 'all' %} selected{% endif %}>Барлығы</option>
+  </select>
+  <button class="btn btn-line btn-sm" type="submit">Сүзу</button>
+</form>
+{% for r in items %}
+<div class="rec" style="flex-wrap:wrap">
+  <div style="flex:1;min-width:240px">
+    <b>{{ r.teacher.full_name }}: {{ r.wanted_display }}</b>
+    <small>{{ r.teacher.school }}, {{ r.teacher.position }}, {{ r.teacher.subject }}</small>
+    <small style="display:block">{{ r.teacher.user.email }}, сұратылған {{ r.created_at|date:"d.m.Y H:i" }}</small>
+    {% if r.comment %}<small style="display:block">Түсініктеме: {{ r.comment }}</small>{% endif %}
+    <small style="display:block"><a href="{% url 'role_document' r.pk %}" target="_blank" rel="noopener">Құжатты ашу</a></small>
+  </div>
+  <span class="badge st-{{ r.status }}">{{ r.get_status_display }}</span>
+  {% if r.status == 'pending' %}
+  <form method="post" class="rvform">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+    <input name="comment" maxlength="300" placeholder="Түсініктеме" aria-label="Түсініктеме">
+    <button class="btn btn-gold btn-sm" type="submit" formaction="{% url 'panel_role_review' r.pk 'approve' %}">Растау</button>
+    <button class="btn btn-line btn-sm" type="submit" formaction="{% url 'panel_role_review' r.pk 'reject' %}">Қабылдамау</button>
+  </form>
+  {% endif %}
+</div>
+{% empty %}<p class="sub">Сұраныс жоқ.</p>{% endfor %}
+{% endblock %}

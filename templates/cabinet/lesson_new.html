@@ -1,0 +1,31 @@
+{% extends "cabinet/base.html" %}
+{% block cab %}
+<div class="magichero">
+  <h2 class="ph">Сиқырлы сабақ конструкторы</h2>
+  <p>Сыныпты, тілді және тақырыпты таңдаңыз: ЖИ теория, практика, тапсырмалар мен интерактивті сынақ бар сабақ жасайды.</p>
+</div>
+{% if error %}<p class="msg error">{{ error }}</p>{% endif %}
+{% if not ai_on %}<p class="msg">ЖИ әзірге қосылмаған: бос қаңқа жасалады. Дайын интерактивті құрал қажет болса, <a href="{{ magic_url }}" target="_blank" rel="noopener noreferrer">Magic World</a> сайтын қолданыңыз.</p>{% endif %}
+<form method="post" id="magicForm" style="max-width:760px">{% csrf_token %}
+<p class="fs">Пәніңіз: <b>{{ subject }}</b></p>
+<p class="fs" style="margin-top:14px">Сынып</p>
+<div class="chips" role="radiogroup" aria-label="Сынып">{% for g in grades %}<label class="chip"><input type="radio" name="grade" value="{{ g }}"{% if f.grade == g|stringformat:"s" %} checked{% endif %}><span>{{ g }}</span></label>{% endfor %}</div>
+<p class="fs">Сабақ тілі</p>
+<div class="chips" role="radiogroup" aria-label="Сабақ тілі">{% for k, v in langs %}<label class="chip"><input type="radio" name="language" value="{{ k }}"{% if f.language == k %} checked{% endif %}><span>{{ v }}</span></label>{% endfor %}</div>
+<div class="g" style="margin-top:6px">
+  <div class="f w"><label for="topic">Сабақтың тақырыбы</label><input id="topic" name="topic" value="{{ f.topic }}" maxlength="200" required placeholder="Мысалы: Операциялық жүйе және файлдық жүйе"></div>
+  <div class="f"><label for="duration">Ұзақтығы (минут)</label><input id="duration" type="number" name="duration" value="{{ f.duration }}" min="15" max="120"></div>
+</div>
+<p class="fs">Сабақ дизайны</p>
+<div class="chips" role="radiogroup" aria-label="Дизайн">{% for k, v in designs %}<label class="chip"><input type="radio" name="design" value="{{ k }}"{% if f.design == k %} checked{% endif %}><span>{{ v }}</span></label>{% endfor %}</div>
+<div class="g">
+  <div class="f w"><label for="wishes">ЖИ-ге ұсыныстарыңыз (міндетті емес)</label><textarea id="wishes" name="wishes" rows="3" maxlength="1500" placeholder="Мысалы: теорияны қысқа және мысалмен жаз; 3 деңгейлік тапсырма қос; ойын элементі болсын">{{ f.wishes }}</textarea></div>
+</div>
+<div class="cta"><button class="btn btn-magic" type="submit">Сиқырлы сабақты жасау</button><a class="btn btn-line" href="{% url 'lessons' %}">Бас тарту</a></div>
+<p class="sub" style="margin-top:10px">{% if ai_on %}Осы айда ЖИ-мен {{ left }} сұраныс қалды.{% endif %} Дайын сабақты өзіңіз өңдеп, сыныпта сабақ режимінде көрсетесіз.</p>
+</form>
+<div id="magicLoad" class="magicload" hidden role="status" aria-live="polite"><div><div class="orb"></div><h2 style="color:#F6D58B;margin:0 0 6px">Сиқыр жұмыс істеп жатыр...</h2><p style="margin:0">Сабақ дайындалуда, 20-60 секунд күтіңіз. Бетті жаппаңыз.</p></div></div>
+<script>
+document.getElementById('magicForm').addEventListener('submit', function () { document.getElementById('magicLoad').hidden = false; });
+</script>
+{% endblock %}

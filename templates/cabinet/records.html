@@ -1,0 +1,20 @@
+{% extends "cabinet/base.html" %}
+{% block cab %}
+<h2 class="ph">Менің жазбаларым</h2>
+{% for s in items %}
+<div class="rec">
+  <div>
+    <b>{{ s.title }}</b>
+    <small>{{ s.criterion.category.name }}, {{ s.criterion.title }}, {{ s.event_date|date:"d.m.Y" }}</small>
+    <small style="display:block"><a href="{% url 'document' s.pk %}" target="_blank" rel="noopener">Құжатты ашу</a></small>
+    {% if s.reviewer_comment %}<small style="display:block">Әкімші: {{ s.reviewer_comment }}</small>{% endif %}
+  </div>
+  <span class="badge st-{{ s.status }}">{{ s.get_status_display }}{% if s.status == 'approved' %}, +{{ s.points }}{% endif %}</span>
+  {% if s.status == 'pending' %}
+  <form method="post" action="{% url 'record_delete' s.pk %}" onsubmit="return confirm('Жазбаны жою керек пе?')">{% csrf_token %}<button class="del" type="submit" aria-label="Жою">&times;</button></form>
+  {% endif %}
+</div>
+{% empty %}
+<p class="sub">Әзірге жазба жоқ. «Деректерді енгізу» бөлімінен алғашқы жетістікті қосыңыз.</p>
+{% endfor %}
+{% endblock %}

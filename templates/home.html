@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <div class="herobg"><div class="wrap hero">
+    <div>
+      <h1>Жетістіктеріңізді өзіңіз жүктеңіз, рейтинг өздігінен есептеледі</h1>
+      <p class="lead">Мұғалімнің жеке портфолиосы мен мектептің рейтинг кестесі бір жерде. Деректі әр мұғалімнің өзі енгізеді, ал мектеп әкімшісі құжатты растайды.</p>
+      <div class="cta">
+        <a class="btn btn-gold" href="{% url 'register' %}">Тіркелу</a>
+        <a class="btn btn-line" href="#qalai">Қалай жұмыс істейді</a>
+      </div>
+    </div>
+
+    {% if my_school %}
+    <div class="board" aria-label="Менің мектебімнің рейтингі">
+      <div class="board-top"><strong>{{ my_school.name }}</strong><span>Мұғалімдер рейтингі</span></div>
+      <ol class="rows">
+        {% for x in mine %}<li class="row{% if x.me %} me{% endif %}"><span class="pos">{{ forloop.counter }}</span><div class="who"><b>{{ x.full_name }}</b><small>{{ x.subject }}</small><div class="bar"><i style="width:{{ x.w }}%"></i></div></div><span class="score">{{ x.score }}</span></li>{% endfor %}
+      </ol>
+      <div class="board-foot">Тек өз мектебіңіздің мұғалімдері көрсетіледі. <a href="{% url 'cabinet' %}">Толық рейтинг кабинетте</a></div>
+    </div>
+    {% elif top %}
+    <div class="board" aria-label="Мектептер рейтингі">
+      <div class="board-top"><strong>Мектептер рейтингі</strong><span>Мұғалім басына орташа ұпай</span></div>
+      <ol class="rows">
+        {% for x in top %}<li class="row"><span class="pos">{{ forloop.counter }}</span><div class="who"><b>{{ x.name }}</b><small>{% if x.district %}{{ x.district }}, {% endif %}{{ x.n }} мұғалім</small><div class="bar"><i style="width:{{ x.w }}%"></i></div></div><span class="score">{{ x.avg }}</span></li>{% endfor %}
+      </ol>
+      <div class="board-foot">Ұпай = расталған ұпайлар қосындысы ÷ мұғалімдер саны. Мұғалімдердің аты көрсетілмейді.</div>
+    </div>
+    {% else %}
+    <div class="board" data-demo aria-label="Рейтинг кестесінің үлгісі">
+      <div class="board-top"><strong>Мектеп рейтингі</strong><span><i class="live"></i>Үлгі, тікелей жаңарады</span></div>
+      <ol class="rows">
+        <li class="row"><span class="pos">1</span><div class="who"><b>Айгерім Нұрлановна С.</b><small>Математика</small><div class="bar"><i style="width:92%"></i></div></div><span class="score">184</span></li>
+        <li class="row"><span class="pos">2</span><div class="who"><b>Ерлан Бауыржанұлы Т.</b><small>Информатика</small><div class="bar"><i style="width:84%"></i></div></div><span class="score">168</span></li>
+        <li class="row"><span class="pos">3</span><div class="who"><b>Зарина Мұратқызы А.</b><small>Қазақ тілі мен әдебиеті</small><div class="bar"><i style="width:77%"></i></div></div><span class="score">154</span></li>
+        <li class="row"><span class="pos">4</span><div class="who"><b>Данияр Сейітұлы К.</b><small>Физика</small><div class="bar"><i style="width:69%"></i></div></div><span class="score">138</span></li>
+        <li class="row"><span class="pos">5</span><div class="who"><b>Мадина Асқарқызы Б.</b><small>Бастауыш сынып</small><div class="bar"><i style="width:61%"></i></div></div><span class="score">122</span></li>
+      </ol>
+      <div class="board-foot">Бұл үлгі деректер. Нақты рейтинг тек расталған жазбалардан есептеледі.</div>
+    </div>
+    {% endif %}
+  </div></div>
+
+  <section id="qalai">
+    <div class="wrap">
+      <h2>Үш қадамда рейтингке қосылыңыз</h2>
+      <p class="sub">Бір рет тіркеліп, жыл бойы жетістіктерді қосып отырасыз.</p>
+      <div class="steps">
+        <div class="step"><h3>Тіркеліңіз</h3><p>Мектебіңізді таңдап, өз аккаунтыңызды ашыңыз.</p></div>
+        <div class="step"><h3>Жетістікті жүктеңіз</h3><p>Санатты таңдап, сипаттама жазыңыз, грамота немесе сертификат файлын қосыңыз.</p></div>
+        <div class="step"><h3>Рейтингті көріңіз</h3><p>Әкімші растаған соң ұпай автоматты түрде қосылып, орныңыз жаңарады.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sanattar">
+    <div class="wrap">
+      <h2>Нені жүктейсіз</h2>
+      <p class="sub">Рейтинг мына бағыттар бойынша есептеледі. Әр санатта деңгейге қарай ұпай беріледі.</p>
+      
+      {% for title, cats in cat_groups %}
+      <p class="grp">{{ title }}</p>
+      <div class="icards">
+        {% for c in cats %}<a class="icard" href="{% url 'category' c.slug %}"><svg class="ic" aria-hidden="true"><use href="#{{ c.icon }}"/></svg><b>{{ c.name }}</b></a>{% endfor %}
+      </div>
+      {% endfor %}
+      
+    </div>
+  </section>
+
+  <section id="rol">
+    <div class="wrap">
+      <h2>Әркімнің өз рөлі бар</h2>
+      <p class="sub">Рейтинг әділ болуы үшін жүктелген құжат расталмай ұпай бермейді.</p>
+      <div class="roles">
+        <div><h3>Мұғалім</h3><p>Өз портфолиосын жүргізеді, құжат жүктейді, жеке нәтижесін көреді.</p></div>
+        <div><h3>Әкімші</h3><p>Жүктелген жазбаларды тексеріп, растайды немесе қайтарады.</p></div>
+        <div><h3>Директор</h3><p>Мектеп рейтингін, пәндер мен оқу жылдары бойынша есепті көреді.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="band">
+        <h2>Портфолиоңызды бүгін бастаңыз</h2>
+        <a class="btn btn-gold" href="{% url 'register' %}">Тіркелу</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% for title, cats in cat_groups %}{% for c in cats %}
+<dialog id="cat{{ c.pk }}" class="dlg catdlg" aria-labelledby="catT{{ c.pk }}">
+  <div class="dh"><h2 id="catT{{ c.pk }}">{{ c.name }}</h2><button class="x" type="button" data-close aria-label="Жабу">&times;</button></div>
+  <div class="db">
+    <div class="catdesc">{% if c.description %}{{ c.description|linebreaks }}{% else %}<p class="sub" style="margin:0">Бұл бағыт бойынша түсініктеме жақында қосылады.</p>{% endif %}</div>
+    {% if c.criteria.all %}<p class="fs" style="margin-top:16px">Ұпай беру тәртібі</p>
+    <table class="tbl"><tbody>{% for k in c.criteria.all %}<tr><td>{{ k.title }}</td><td class="num"><b>{{ k.points }}</b> ұпай</td></tr>{% endfor %}</tbody></table>{% endif %}
+    <p style="margin:18px 0 0">{% if user.is_authenticated and user.teacher and c.group != 'head' or user.is_authenticated and user.teacher.can_review %}<a class="btn btn-gold" href="{% url 'enter_form' c.slug %}">Осы бағыт бойынша жазба қосу</a>{% else %}<a class="btn btn-gold" href="{% url 'register' %}">Тіркеліп бастау</a>{% endif %}</p>
+  </div>
+</dialog>
+{% endfor %}{% endfor %}
+{% endblock %}

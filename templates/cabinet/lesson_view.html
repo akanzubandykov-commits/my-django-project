@@ -1,0 +1,34 @@
+{% extends "cabinet/base.html" %}
+{% load static %}
+{% block cab %}
+<div class="noprint savebar">
+  <button class="btn btn-gold" type="button" id="playBtn">Сабақ режимі</button>
+  <button class="btn btn-line" type="button" onclick="window.print()">Басып шығару</button>
+  <a class="btn btn-line" href="{% url 'lesson_edit' lesson.pk %}">Өңдеу</a>
+  <a class="btn btn-line" href="{% url 'lessons' %}">Тізімге</a>
+</div>
+<article class="sheet th-{{ lesson.design }}">
+  <p class="shmeta">{{ lesson.subject }} | {{ lesson.grade }}-сынып | {{ lesson.get_language_display }} | {{ total }} мин</p>
+  <h1>{{ c.title|default:lesson.topic }}</h1>
+  {% if c.goal %}<p><b>Мақсаты:</b> {{ c.goal }}</p>{% endif %}
+  {% if c.objectives %}<ul>{% for o in c.objectives %}<li>{{ o }}</li>{% endfor %}</ul>{% endif %}
+  {% for s in stages %}
+  <div class="stage">
+    <div class="sthead"><span class="stnum">{{ forloop.counter }}</span><b>{{ s.name }}</b><span class="stmeta">{{ s.kind_label }}, {{ s.minutes }} мин</span></div>
+    {{ s.body|linebreaks }}
+  </div>
+  {% endfor %}
+  {% if c.homework %}<div class="stage"><div class="sthead"><b>Үй тапсырмасы</b></div>{{ c.homework|linebreaks }}</div>{% endif %}
+  {% if c.answers %}<div class="stage"><div class="sthead"><b>Мұғалімге: жауаптар</b></div>{{ c.answers|linebreaks }}</div>{% endif %}
+{% if c.quiz %}<div class="stage"><div class="sthead"><b>Сынақ (сабақ режимінде интерактивті)</b></div>
+  {% for q in c.quiz %}<p><b>{{ forloop.counter }}. {{ q.q }}</b></p><ul>{% for o in q.options %}<li{% if forloop.counter0 == q.answer %} class="qok"{% endif %}>{{ o }}</li>{% endfor %}</ul>{% endfor %}</div>{% endif %}
+</article>
+{{ c|json_script:"lessonData" }}
+<div id="present" class="present th-{{ lesson.design }}" hidden role="dialog" aria-label="Сабақ режимі">
+  <div class="pbar"><span id="pStage"></span><span id="pTimer" class="ptimer">00:00</span><button type="button" id="pClose" class="btn btn-line btn-sm">Жабу</button></div>
+  <h2 id="pName"></h2>
+  <div id="pBody"></div>
+  <div class="pnav"><button type="button" id="pPrev" class="btn btn-line">&lsaquo; Алдыңғы</button><button type="button" id="pStart" class="btn btn-gold">Таймер</button><button type="button" id="pNext" class="btn btn-line">Келесі &rsaquo;</button></div>
+</div>
+<script src="{% static 'js/lesson.js' %}"></script>
+{% endblock %}
