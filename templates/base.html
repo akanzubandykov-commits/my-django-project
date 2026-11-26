@@ -1,0 +1,31 @@
+{% load static %}<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}Ustaz Portfolio — мұғалімнің өз портфолиосы{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Noto+Serif:wght@700&family=PT+Sans:wght@400;700&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/site.css' %}">
+</head>
+<body>
+{% include "_icons.html" %}
+{% block header %}
+<header><div class="wrap nav">
+  <a class="brand" href="{% url 'home' %}"><span class="sun" aria-hidden="true"></span>Ustaz Portfolio</a>
+  <nav aria-label="Негізгі мәзір">
+    <a class="hide-m" href="{% url 'home' %}#qalai">Қалай жұмыс істейді</a>
+    <a class="hide-m" href="{% url 'home' %}#sanattar">Санаттар</a>
+    <a class="hide-m" href="{% url 'home' %}#rol">Рөлдер</a>
+    {% if user.is_authenticated %}<a class="btn btn-line" href="{% url 'after_login' %}">{% if user.is_staff %}Панель{% else %}Кабинет{% endif %}</a>
+    <form method="post" action="{% url 'logout' %}" class="navout">{% csrf_token %}<button class="btn btn-gold" type="submit">Шығу</button></form>
+    {% else %}<a class="btn btn-line" href="{% url 'login' %}">Кіру</a>{% endif %}
+  </nav>
+</div></header>
+{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}
+<footer><div class="wrap"><span>© 2026 Ustaz Portfolio. Мектеп мұғалімдеріне арналған.</span><span>Байланыс: info@example.kz</span></div></footer>
+{% endblock %}
+<script src="{% static 'js/site.js' %}"></script>
+</body>
+</html>

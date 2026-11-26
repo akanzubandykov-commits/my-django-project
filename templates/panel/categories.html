@@ -1,0 +1,13 @@
+{% extends "panel/base.html" %}
+{% block cab %}
+<h2 class="ph">Санаттардың түсініктемесі</h2>
+<p class="sub" style="margin-bottom:6px">Басты беттегі әр санат карточкасын басқанда терезеде шығатын қысқаша мәтін. Не жүктеу керегін, қандай құжат растайтынын жазыңыз. Жаңа жолға өту үшін Enter басыңыз. Мәтін бос болса, «жақында қосылады» деп көрсетіледі.</p>
+<form method="post">{% csrf_token %}
+<div class="savebar"><button class="btn btn-gold" type="submit">Сақтау</button></div>
+{% for c in cats %}
+<div class="f" style="margin:14px 0"><label for="d{{ c.pk }}">{{ c.order }}. {{ c.name }}</label>
+<textarea id="d{{ c.pk }}" name="d{{ c.pk }}" rows="4" maxlength="2000">{{ c.description }}</textarea></div>
+{% endfor %}
+<button class="btn btn-gold" type="submit">Сақтау</button>
+</form>
+{% endblock %}
