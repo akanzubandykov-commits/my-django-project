@@ -1,9 +1,0 @@
-{% extends "cabinet/base.html" %}
-{% block cab %}
-<h2 class="ph">Мұғалімді қосу</h2>
-<p class="sub" style="margin-bottom:14px">Мұғалім {{ request.teacher.school }} мектебіне қосылады. Құпиясөзді бос қалдырсаңыз, автоматты жасалып, сақтағаннан кейін бір рет көрсетіледі.</p>
-<form method="post" style="max-width:720px">{% csrf_token %}
-  {% include "_form.html" %}
-  <div class="cta"><button class="btn btn-gold" type="submit">Қосу</button><a class="btn btn-line" href="{% url 'school_teachers' %}">Бас тарту</a></div>
-</form>
-{% endblock %}

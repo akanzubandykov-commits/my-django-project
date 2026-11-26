@@ -1,8 +1,0 @@
-{% extends "cabinet/base.html" %}
-{% block cab %}
-<h2 class="ph">{{ cat.name }}</h2>
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
-  {% include "_form.html" %}
-  <div class="cta"><button class="btn btn-gold" type="submit">Жіберу</button><a class="btn btn-line" href="{% url 'enter' %}">Бас тарту</a></div>
-</form>
-{% endblock %}
